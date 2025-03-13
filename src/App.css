@@ -122,3 +122,62 @@ h1{
     font-size: 1.5rem;
   }
 }
+
+/* API Test Component */
+.api-test {
+  margin: 2rem auto;
+  max-width: 500px;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: left;
+}
+
+.api-test form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.api-test button {
+  padding: 8px 16px;
+  background-color: #e50914;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.api-test button:hover:not(:disabled) {
+  background-color: #f40612;
+}
+
+.api-test button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e50914;
+  margin-top: 1rem;
+}
+
+.results {
+  margin-top: 1.5rem;
+}
+
+.results ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.results li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.results li:last-child {
+  border-bottom: none;
+}

@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import React from 'react';
 import Layout from '../components/layout/Layout';
 
 const MovieDetailsPage = () => {
