@@ -65,7 +65,8 @@ export const useMovieSearch = (): UseMovieSearchResult => {
           } else {
             // Filter out any duplicates that might occur
             const newMovies = response.Search.filter(
-              newMovie => !movies.some(existingMovie => existingMovie.imdbID === newMovie.imdbID)
+              (newMovie: MovieSearchResult) =>
+                !movies.some(existingMovie => existingMovie.imdbID === newMovie.imdbID)
             );
             setMovies(prevMovies => [...prevMovies, ...newMovies]);
           }

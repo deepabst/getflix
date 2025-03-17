@@ -19,14 +19,17 @@ const MovieDetails = () => {
 
       try {
         const details = await getMovieDetails(id);
-        if (details) {
-          setMovie(details);
+
+        if (details.Response === 'True') {
+          // Cast the response to MovieDetailsType
+          setMovie(details as unknown as MovieDetailsType);
         } else {
-          setError('Movie not found');
+          setError(details.Error || 'Failed to load movie details');
+          setMovie(null);
         }
       } catch (err) {
-        setError('Failed to load movie details');
-        console.error('Error fetching movie details:', err);
+        setError('An error occurred while fetching movie details');
+        setMovie(null);
       } finally {
         setLoading(false);
       }
@@ -37,7 +40,7 @@ const MovieDetails = () => {
 
   if (loading) {
     return (
-      <div className="movie-details-loading">
+      <div className="movie-details-container loading">
         <div className="loader"></div>
         <p>Loading movie details...</p>
       </div>
@@ -46,9 +49,9 @@ const MovieDetails = () => {
 
   if (error || !movie) {
     return (
-      <div className="movie-details-error">
+      <div className="movie-details-container error">
         <h2>Error</h2>
-        <p>{error || 'Something went wrong'}</p>
+        <p>{error || 'Movie not found'}</p>
         <Link to="/" className="back-button">
           Back to Search
         </Link>
@@ -57,10 +60,10 @@ const MovieDetails = () => {
   }
 
   return (
-    <div className="movie-details">
+    <div className="movie-details-container">
       <div className="movie-details-header">
         <Link to="/" className="back-button">
-          ← Back to Search
+          Back to Search
         </Link>
         <h1 className="movie-title">{movie.Title}</h1>
         <div className="movie-meta">
@@ -72,100 +75,87 @@ const MovieDetails = () => {
 
       <div className="movie-details-content">
         <div className="movie-poster-container">
-          {movie.Poster !== 'N/A' ? (
+          {movie.Poster && movie.Poster !== 'N/A' ? (
             <img src={movie.Poster} alt={`${movie.Title} poster`} className="movie-poster" />
           ) : (
             <div className="no-poster">No Poster Available</div>
           )}
 
           <div className="movie-ratings">
-            {movie.Ratings.map((rating, index) => (
-              <div key={index} className="rating">
-                <span className="rating-source">{rating.Source}</span>
-                <span className="rating-value">{rating.Value}</span>
-              </div>
-            ))}
-            {movie.imdbRating !== 'N/A' && (
-              <div className="imdb-rating">
-                <span className="rating-label">IMDb Rating:</span>
-                <span className="rating-value">{movie.imdbRating}/10</span>
-                <span className="rating-votes">({movie.imdbVotes} votes)</span>
-              </div>
-            )}
+            {movie.Ratings &&
+              movie.Ratings.map((rating, index) => (
+                <div key={index} className="rating">
+                  <span className="rating-source">{rating.Source}</span>
+                  <span className="rating-value">{rating.Value}</span>
+                </div>
+              ))}
           </div>
         </div>
 
         <div className="movie-info">
           <p className="movie-plot">{movie.Plot}</p>
 
-          <div className="info-grid">
-            {movie.Genre !== 'N/A' && (
-              <div className="info-item">
+          <div className="movie-details-grid">
+            {movie.Genre && (
+              <div className="detail-item">
                 <h3>Genre</h3>
                 <p>{movie.Genre}</p>
               </div>
             )}
 
-            {movie.Director !== 'N/A' && (
-              <div className="info-item">
+            {movie.Director && movie.Director !== 'N/A' && (
+              <div className="detail-item">
                 <h3>Director</h3>
                 <p>{movie.Director}</p>
               </div>
             )}
 
-            {movie.Writer !== 'N/A' && (
-              <div className="info-item">
+            {movie.Writer && movie.Writer !== 'N/A' && (
+              <div className="detail-item">
                 <h3>Writer</h3>
                 <p>{movie.Writer}</p>
               </div>
             )}
 
-            {movie.Actors !== 'N/A' && (
-              <div className="info-item">
+            {movie.Actors && (
+              <div className="detail-item">
                 <h3>Actors</h3>
                 <p>{movie.Actors}</p>
               </div>
             )}
 
-            {movie.Awards !== 'N/A' && (
-              <div className="info-item">
-                <h3>Awards</h3>
-                <p>{movie.Awards}</p>
+            {movie.Language && (
+              <div className="detail-item">
+                <h3>Language</h3>
+                <p>{movie.Language}</p>
               </div>
             )}
 
-            {movie.BoxOffice !== 'N/A' && movie.BoxOffice && (
-              <div className="info-item">
-                <h3>Box Office</h3>
-                <p>{movie.BoxOffice}</p>
-              </div>
-            )}
-
-            {movie.Production !== 'N/A' && movie.Production && (
-              <div className="info-item">
-                <h3>Production</h3>
-                <p>{movie.Production}</p>
-              </div>
-            )}
-
-            {movie.Released !== 'N/A' && (
-              <div className="info-item">
-                <h3>Released</h3>
-                <p>{movie.Released}</p>
-              </div>
-            )}
-
-            {movie.Country !== 'N/A' && (
-              <div className="info-item">
+            {movie.Country && (
+              <div className="detail-item">
                 <h3>Country</h3>
                 <p>{movie.Country}</p>
               </div>
             )}
 
-            {movie.Language !== 'N/A' && (
-              <div className="info-item">
-                <h3>Language</h3>
-                <p>{movie.Language}</p>
+            {movie.Awards && movie.Awards !== 'N/A' && (
+              <div className="detail-item">
+                <h3>Awards</h3>
+                <p>{movie.Awards}</p>
+              </div>
+            )}
+
+            {movie.BoxOffice && movie.BoxOffice !== 'N/A' && (
+              <div className="detail-item">
+                <h3>Box Office</h3>
+                <p>{movie.BoxOffice}</p>
+              </div>
+            )}
+
+            {movie.Production && movie.Production !== 'N/A' && (
+              <div className="detail-item">
+                <h3>Production</h3>
+                <p>{movie.Production}</p>
               </div>
             )}
           </div>

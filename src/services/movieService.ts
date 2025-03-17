@@ -1,4 +1,4 @@
-import { MovieSearchResponse, MovieDetailsResponse } from '../types/movie';
+import { SearchResponse, MovieDetailsResponse } from '../types/movie';
 
 const API_KEY = import.meta.env.VITE_OMDB_API_KEY || '320f6ab2';
 const API_URL = 'https://www.omdbapi.com/';
@@ -8,7 +8,7 @@ export const searchMovies = async (
   searchTerm: string,
   page: number = 1,
   type?: string
-): Promise<MovieSearchResponse> => {
+): Promise<SearchResponse> => {
   try {
     const params = new URLSearchParams({
       apikey: API_KEY,
@@ -29,7 +29,7 @@ export const searchMovies = async (
     return await response.json();
   } catch (error) {
     console.error('Error searching movies:', error);
-    return { Response: 'False', Error: 'Failed to fetch movies' };
+    return { Response: 'False', Error: 'Failed to fetch movies', Search: [], totalResults: '0' };
   }
 };
 

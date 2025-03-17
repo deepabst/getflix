@@ -1,23 +1,25 @@
-// Basic movie information from search results
-export type MovieSearchResult = {
-  imdbID: string;
+// Basic movie search result type
+export interface MovieSearchResult {
   Title: string;
   Year: string;
+  imdbID: string;
   Type: string;
   Poster: string;
-};
+}
 
-// Search response from OMDb API
-export type SearchResponse = {
+// Response from search API
+export interface SearchResponse {
   Search: MovieSearchResult[];
   totalResults: string;
   Response: string;
   Error?: string;
-};
+}
+
+// Alias for backward compatibility
+export type MovieSearchResponse = SearchResponse;
 
 // Detailed movie information
-export type MovieDetails = {
-  imdbID: string;
+export interface MovieDetails {
   Title: string;
   Year: string;
   Rated: string;
@@ -32,17 +34,25 @@ export type MovieDetails = {
   Country: string;
   Awards: string;
   Poster: string;
-  Ratings: {
+  Ratings: Array<{
     Source: string;
     Value: string;
-  }[];
+  }>;
   Metascore: string;
   imdbRating: string;
   imdbVotes: string;
+  imdbID: string;
   Type: string;
   DVD?: string;
   BoxOffice?: string;
   Production?: string;
   Website?: string;
   Response: string;
-};
+}
+
+// Response from details API
+export interface MovieDetailsResponse {
+  Response: string;
+  Error?: string;
+  [key: string]: any; // Allow for all the movie details properties
+}
