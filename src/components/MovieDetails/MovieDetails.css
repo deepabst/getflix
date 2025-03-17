@@ -39,13 +39,14 @@
   color: #666;
 }
 
-.movie-year, .movie-rated, .movie-runtime {
+.movie-year,
+.movie-rated,
+.movie-runtime {
   position: relative;
 }
 
 .movie-year:not(:last-child)::after,
 .movie-rated:not(:last-child)::after {
-  content: "•";
   position: absolute;
   right: -0.7rem;
 }
@@ -105,6 +106,7 @@
 }
 
 .rating-source {
+  color: rgba(0, 0, 0, 0.1);
   font-weight: 500;
 }
 
@@ -188,7 +190,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error State */
@@ -216,12 +220,12 @@
   .movie-details-content {
     grid-template-columns: 1fr;
   }
-  
+
   .movie-poster-container {
     max-width: 350px;
     margin: 0 auto;
   }
-  
+
   .movie-title {
     font-size: 2rem;
   }
@@ -231,12 +235,12 @@
   .movie-details {
     padding: 1rem;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .movie-title {
     font-size: 1.5rem;
   }
-} 
+}

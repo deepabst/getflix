@@ -2,13 +2,17 @@ import { useState, useCallback } from 'react';
 import { searchMovies } from '../services/movieService';
 import { MovieSearchResult } from '../types/movie';
 
+type MediaType = 'movie' | 'series' | 'episode' | 'game' | '';
+
 interface UseMovieSearchResult {
   movies: MovieSearchResult[];
   totalResults: number;
   loading: boolean;
   error: string | null;
   hasMore: boolean;
-  search: (term: string, page?: number) => Promise<void>;
+  mediaType: MediaType;
+  setMediaType: (type: MediaType) => void;
+  search: (term: string, page?: number, newType?: MediaType) => Promise<void>;
   loadMore: () => Promise<void>;
 }
 
@@ -20,9 +24,12 @@ export const useMovieSearch = (): UseMovieSearchResult => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentSearchTerm, setCurrentSearchTerm] = useState('');
   const [hasMore, setHasMore] = useState(false);
+  const [mediaType, setMediaType] = useState<MediaType>('');
 
+  // The search function now accepts an optional type parameter
   const search = useCallback(
-    async (term: string, page = 1) => {
+    async (term: string, page = 1, newType?: MediaType) => {
+      // If search term is empty, reset everything
       if (!term.trim()) {
         setMovies([]);
         setTotalResults(0);
@@ -33,16 +40,30 @@ export const useMovieSearch = (): UseMovieSearchResult => {
         return;
       }
 
+      // Set loading state to true
       setLoading(true);
       setError(null);
 
-      try {
-        const response = await searchMovies(term, page);
+      // If we're on page 1, clear the movies array to show loading state
+      if (page === 1) {
+        setMovies([]);
+      }
 
+      // Use the provided type or fall back to the current mediaType
+      const typeToUse = newType !== undefined ? newType : mediaType;
+
+      try {
+        // Call the API service with optional type filter
+        const response = await searchMovies(term, page, typeToUse ? typeToUse : undefined);
+
+        // Handle successful response
         if (response.Response === 'True') {
+          // If it's a new search (page 1), replace the movies array
+          // Otherwise, append to the existing array
           if (page === 1) {
             setMovies(response.Search);
           } else {
+            // Filter out any duplicates that might occur
             const newMovies = response.Search.filter(
               newMovie => !movies.some(existingMovie => existingMovie.imdbID === newMovie.imdbID)
             );
@@ -52,19 +73,35 @@ export const useMovieSearch = (): UseMovieSearchResult => {
           const total = parseInt(response.totalResults, 10);
           setTotalResults(total);
 
-          setHasMore(movies.length + response.Search.length < total);
+          // Check if there are more results to load
+          setHasMore(page * 10 < total);
 
+          // Update current search term and page
           setCurrentSearchTerm(term);
           setCurrentPage(page);
+
+          // Clear any previous errors
+          setError(null);
         } else {
+          // Handle API error response
           if (page === 1) {
             setMovies([]);
             setTotalResults(0);
           }
-          setError(response.Error || 'No results found');
+
+          // Customize error message for "Movie not found" when filtering
+          if (response.Error === 'Movie not found!' && typeToUse) {
+            setError(
+              `No ${typeToUse}s found for "${term}". Try a different search term or filter.`
+            );
+          } else {
+            setError(response.Error || 'No results found');
+          }
+
           setHasMore(false);
         }
       } catch (err) {
+        // Handle unexpected errors
         if (page === 1) {
           setMovies([]);
           setTotalResults(0);
@@ -72,10 +109,29 @@ export const useMovieSearch = (): UseMovieSearchResult => {
         setError('An error occurred while searching. Please try again.');
         setHasMore(false);
       } finally {
+        // Always set loading to false when done
         setLoading(false);
       }
     },
-    [movies]
+    [movies, mediaType]
+  );
+
+  // Simplified media type change handler
+  const handleMediaTypeChange = useCallback(
+    (type: MediaType) => {
+      if (type !== mediaType) {
+        setMediaType(type);
+
+        // If there's an active search, re-search with the new type
+        if (currentSearchTerm) {
+          // Clear the current results immediately
+          setMovies([]);
+          // Pass the new type directly to the search function
+          search(currentSearchTerm, 1, type);
+        }
+      }
+    },
+    [mediaType, currentSearchTerm, search]
   );
 
   const loadMore = useCallback(async () => {
@@ -85,5 +141,15 @@ export const useMovieSearch = (): UseMovieSearchResult => {
     }
   }, [loading, hasMore, currentSearchTerm, currentPage, search]);
 
-  return { movies, totalResults, loading, error, hasMore, search, loadMore };
+  return {
+    movies,
+    totalResults,
+    loading,
+    error,
+    hasMore,
+    mediaType,
+    setMediaType: handleMediaTypeChange,
+    search,
+    loadMore,
+  };
 };

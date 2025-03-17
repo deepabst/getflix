@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useMovieSearch } from '../../hooks/useMovieSearch';
 import { useSearchContext } from '../../context/SearchContext';
 import SearchBar from './SearchBar';
+import TypeFilter from './TypeFilter';
 import MovieList from './MovieList';
 import './Search.css';
+
+type MediaType = 'movie' | 'series' | 'episode' | 'game' | '';
 
 const Search = () => {
   const {
@@ -13,6 +16,8 @@ const Search = () => {
     setSearchResults,
     totalResults,
     setTotalResults,
+    mediaType: contextMediaType,
+    setMediaType: setContextMediaType,
   } = useSearchContext();
 
   const {
@@ -21,9 +26,15 @@ const Search = () => {
     loading,
     error,
     hasMore,
+    mediaType,
+    setMediaType,
     search,
     loadMore,
   } = useMovieSearch();
+
+  // Local state to prevent UI flicker during type changes
+  const [displayedMovies, setDisplayedMovies] = useState<typeof movies>([]);
+  const [isChangingType, setIsChangingType] = useState(false);
 
   // Reference to the loading element for intersection observer
   const observer = useRef<IntersectionObserver | null>(null);
@@ -47,17 +58,40 @@ const Search = () => {
     [loading, hasMore, loadMore]
   );
 
-  // Update context when search results change
+  // Update displayed movies when movies change, but only if not changing type
   useEffect(() => {
     if (movies.length > 0) {
-      setSearchResults(movies);
-      setTotalResults(apiTotalResults);
+      setDisplayedMovies(movies);
+      setIsChangingType(false);
+    } else if (!isChangingType) {
+      setDisplayedMovies([]);
     }
+  }, [movies, isChangingType]);
+
+  // Update context when search results change
+  useEffect(() => {
+    setSearchResults(movies);
+    setTotalResults(apiTotalResults);
   }, [movies, apiTotalResults, setSearchResults, setTotalResults]);
 
-  // Perform initial search if there's a saved search term
+  // Sync media type with context (one-time on mount)
   useEffect(() => {
-    if (searchTerm && searchResults.length === 0) {
+    if (contextMediaType !== '' && contextMediaType !== mediaType) {
+      setMediaType(contextMediaType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Update context when media type changes
+  useEffect(() => {
+    if (mediaType !== contextMediaType) {
+      setContextMediaType(mediaType);
+    }
+  }, [mediaType, contextMediaType, setContextMediaType]);
+
+  // Perform initial search if there's a saved search term (one-time on mount)
+  useEffect(() => {
+    if (searchTerm) {
       search(searchTerm);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,7 +99,15 @@ const Search = () => {
 
   const handleSubmit = (term: string) => {
     if (term.trim()) {
+      setSearchTerm(term);
       search(term);
+    }
+  };
+
+  const handleTypeChange = (type: MediaType) => {
+    if (type !== mediaType) {
+      setIsChangingType(true);
+      setMediaType(type);
     }
   };
 
@@ -78,14 +120,21 @@ const Search = () => {
         loading={loading}
       />
 
+      <TypeFilter
+        selectedType={mediaType}
+        onTypeChange={handleTypeChange}
+        disabled={loading || !searchTerm}
+      />
+
       {error && <p className="error-message">{error}</p>}
 
-      {searchResults.length > 0 && (
+      {displayedMovies.length > 0 && !error && (
         <>
           <p className="results-count">
             Found {totalResults} result{totalResults !== 1 ? 's' : ''}
+            {mediaType && ` in the ${mediaType} category`}
           </p>
-          <MovieList movies={searchResults} />
+          <MovieList movies={displayedMovies} />
 
           {/* Loading indicator for infinite scroll */}
           {hasMore && (
@@ -96,8 +145,15 @@ const Search = () => {
         </>
       )}
 
-      {!error && searchResults.length === 0 && searchTerm && !loading && (
-        <p className="no-results">No movies found. Try a different search term.</p>
+      {!error && displayedMovies.length === 0 && searchTerm && !loading && !isChangingType && (
+        <p className="no-results">No results found. Try a different search term or filter.</p>
+      )}
+
+      {(loading || isChangingType) && displayedMovies.length === 0 && (
+        <div className="loading-container">
+          <div className="loader"></div>
+          <p>Searching...</p>
+        </div>
       )}
     </div>
   );

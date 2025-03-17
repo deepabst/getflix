@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
 import { MovieSearchResult } from '../types/movie';
 
+type MediaType = 'movie' | 'series' | 'episode' | 'game' | '';
+
 interface SearchContextType {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
@@ -10,6 +12,8 @@ interface SearchContextType {
   setTotalResults: (total: number) => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
+  mediaType: MediaType;
+  setMediaType: (type: MediaType) => void;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -19,6 +23,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [searchResults, setSearchResults] = useState<MovieSearchResult[]>([]);
   const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [mediaType, setMediaType] = useState<MediaType>('');
 
   return (
     <SearchContext.Provider
@@ -31,6 +36,8 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
         setTotalResults,
         currentPage,
         setCurrentPage,
+        mediaType,
+        setMediaType,
       }}
     >
       {children}

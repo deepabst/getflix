@@ -9,48 +9,47 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ searchTerm, setSearchTerm, onSubmit, loading }: SearchBarProps) => {
-  const [localTerm, setLocalTerm] = useState(searchTerm);
+  const [inputValue, setInputValue] = useState(searchTerm);
 
   // Update local term when searchTerm changes (e.g., when returning from details page)
   useEffect(() => {
-    setLocalTerm(searchTerm);
+    setInputValue(searchTerm);
   }, [searchTerm]);
 
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLocalTerm(e.target.value);
+    setInputValue(e.target.value);
   };
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchTerm(localTerm);
-    onSubmit(localTerm);
+    onSubmit(inputValue);
   };
 
   // Debounce search
   useEffect(() => {
-    if (localTerm !== searchTerm) {
+    if (inputValue !== searchTerm) {
       const timer = setTimeout(() => {
-        if (localTerm.trim()) {
-          setSearchTerm(localTerm);
-          onSubmit(localTerm);
+        if (inputValue.trim()) {
+          setSearchTerm(inputValue);
+          onSubmit(inputValue);
         }
       }, 500);
 
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localTerm]);
+  }, [inputValue]);
 
   return (
-    <form className="search-bar" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="search-bar">
       <input
         type="text"
-        value={localTerm}
-        onChange={handleChange}
-        placeholder="Search for movies, series, episodes..."
         className="search-input"
+        placeholder="Search for movies to get started"
+        value={inputValue}
+        onChange={handleChange}
         disabled={loading}
       />
       {loading && <div className="search-loader"></div>}
