@@ -11,6 +11,11 @@ interface SearchBarProps {
 const SearchBar = ({ searchTerm, setSearchTerm, onSubmit, loading }: SearchBarProps) => {
   const [localTerm, setLocalTerm] = useState(searchTerm);
 
+  // Update local term when searchTerm changes (e.g., when returning from details page)
+  useEffect(() => {
+    setLocalTerm(searchTerm);
+  }, [searchTerm]);
+
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLocalTerm(e.target.value);
@@ -19,21 +24,22 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSubmit, loading }: SearchBarPr
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSearchTerm(localTerm);
     onSubmit(localTerm);
   };
 
-  // Update parent's searchTerm when localTerm changes
+  // Debounce search
   useEffect(() => {
-    setSearchTerm(localTerm);
+    if (localTerm !== searchTerm) {
+      const timer = setTimeout(() => {
+        if (localTerm.trim()) {
+          setSearchTerm(localTerm);
+          onSubmit(localTerm);
+        }
+      }, 500);
 
-    // Debounce search
-    const timer = setTimeout(() => {
-      if (localTerm.trim()) {
-        onSubmit(localTerm);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localTerm]);
 
