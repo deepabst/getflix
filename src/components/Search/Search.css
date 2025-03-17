@@ -1,0 +1,30 @@
+/* Search Container */
+.search-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+/* Results count */
+.results-count {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Error and no results messages */
+.error-message, .no-results {
+  padding: 1rem;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.error-message {
+  background-color: rgba(229, 9, 20, 0.1);
+  color: #e50914;
+}
+
+.no-results {
+  background-color: #f5f5f5;
+  color: #666;
+} 

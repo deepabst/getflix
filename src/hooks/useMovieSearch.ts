@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { searchMovies } from '../services/movieService';
 import { MovieSearchResult } from '../types/movie';
 
@@ -16,7 +16,7 @@ export const useMovieSearch = (): UseMovieSearchResult => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = async (term: string, page = 1) => {
+  const search = useCallback(async (term: string, page = 1) => {
     if (!term.trim()) {
       setMovies([]);
       setTotalResults(0);
@@ -45,7 +45,7 @@ export const useMovieSearch = (): UseMovieSearchResult => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { movies, totalResults, loading, error, search };
 };
