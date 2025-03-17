@@ -27,4 +27,25 @@
 .no-results {
   background-color: #f5f5f5;
   color: #666;
+}
+
+/* Infinite Scroll Loading */
+.loading-more {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+  margin-top: 1rem;
+}
+
+.loading-more .loader {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(229, 9, 20, 0.3);
+  border-radius: 50%;
+  border-top-color: #e50914;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 } 

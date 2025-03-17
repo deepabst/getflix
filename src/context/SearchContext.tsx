@@ -8,6 +8,8 @@ interface SearchContextType {
   setSearchResults: (results: MovieSearchResult[]) => void;
   totalResults: number;
   setTotalResults: (total: number) => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -16,6 +18,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<MovieSearchResult[]>([]);
   const [totalResults, setTotalResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <SearchContext.Provider
@@ -26,6 +29,8 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
         setSearchResults,
         totalResults,
         setTotalResults,
+        currentPage,
+        setCurrentPage,
       }}
     >
       {children}

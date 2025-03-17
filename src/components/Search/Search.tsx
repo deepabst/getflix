@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useMovieSearch } from '../../hooks/useMovieSearch';
 import { useSearchContext } from '../../context/SearchContext';
 import SearchBar from './SearchBar';
@@ -15,7 +15,37 @@ const Search = () => {
     setTotalResults,
   } = useSearchContext();
 
-  const { movies, totalResults: apiTotalResults, loading, error, search } = useMovieSearch();
+  const {
+    movies,
+    totalResults: apiTotalResults,
+    loading,
+    error,
+    hasMore,
+    search,
+    loadMore,
+  } = useMovieSearch();
+
+  // Reference to the loading element for intersection observer
+  const observer = useRef<IntersectionObserver | null>(null);
+  const loadingRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (loading) return;
+
+      // Disconnect previous observer
+      if (observer.current) observer.current.disconnect();
+
+      // Create new observer
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMore();
+        }
+      });
+
+      // Observe the loading element
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore, loadMore]
+  );
 
   // Update context when search results change
   useEffect(() => {
@@ -56,6 +86,13 @@ const Search = () => {
             Found {totalResults} result{totalResults !== 1 ? 's' : ''}
           </p>
           <MovieList movies={searchResults} />
+
+          {/* Loading indicator for infinite scroll */}
+          {hasMore && (
+            <div ref={loadingRef} className="loading-more">
+              {loading && <div className="loader"></div>}
+            </div>
+          )}
         </>
       )}
 
