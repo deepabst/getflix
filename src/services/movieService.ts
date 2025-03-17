@@ -1,63 +1,56 @@
-import axios from 'axios';
-import { SearchResponse, MovieDetails } from '../types/movie';
+import { MovieSearchResponse, MovieDetailsResponse } from '../types/movie';
 
-const API_KEY = '320f6ab2';
-const BASE_URL = 'https://www.omdbapi.com/';
-
-// Create axios instance with base configuration
-const api = axios.create({
-  baseURL: BASE_URL,
-  params: {
-    apikey: API_KEY,
-  },
-});
+const API_KEY = import.meta.env.VITE_OMDB_API_KEY || '320f6ab2';
+const API_URL = 'https://www.omdbapi.com/';
 
 // Search movies by title
 export const searchMovies = async (
   searchTerm: string,
   page: number = 1,
-  type?: 'movie' | 'series' | 'episode'
-): Promise<SearchResponse> => {
+  type?: string
+): Promise<MovieSearchResponse> => {
   try {
-    const params: Record<string, string | number> = {
+    const params = new URLSearchParams({
+      apikey: API_KEY,
       s: searchTerm,
-      page,
-    };
+      page: page.toString(),
+    });
 
-    // Add type parameter if provided
     if (type) {
-      params.type = type;
+      params.append('type', type);
     }
 
-    const response = await api.get('', { params });
-    return response.data;
+    const response = await fetch(`${API_URL}?${params}`);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return await response.json();
   } catch (error) {
     console.error('Error searching movies:', error);
-    return {
-      Search: [],
-      totalResults: '0',
-      Response: 'False',
-      Error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
+    return { Response: 'False', Error: 'Failed to fetch movies' };
   }
 };
 
 // Get movie details by ID
-export const getMovieDetails = async (imdbID: string): Promise<MovieDetails | null> => {
+export const getMovieDetails = async (imdbID: string): Promise<MovieDetailsResponse> => {
   try {
-    const response = await api.get('', {
-      params: {
-        i: imdbID,
-        plot: 'full',
-      },
+    const params = new URLSearchParams({
+      apikey: API_KEY,
+      i: imdbID,
+      plot: 'full',
     });
 
-    if (response.data.Response === 'True') {
-      return response.data;
+    const response = await fetch(`${API_URL}?${params}`);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-    return null;
+
+    return await response.json();
   } catch (error) {
     console.error('Error fetching movie details:', error);
-    return null;
+    return { Response: 'False', Error: 'Failed to fetch movie details' };
   }
 };
