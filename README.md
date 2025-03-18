@@ -2,6 +2,8 @@
 
 A React application for searching movies using the OMDb API.
 
+Live demo: https://getflix-o9uxx82le-deepabsts-projects.vercel.app
+
 ## Features
 
 - Search for movies, series, episodes, and games
@@ -19,7 +21,7 @@ A React application for searching movies using the OMDb API.
 - TypeScript
 - React Router
 - OMDb API
-- CSS for styling
+- CSS
 
 ## Development Process & Collaboration with Cursor
 
@@ -46,17 +48,17 @@ Development proceeded through several iterative cycles, with each cycle focusing
 
 ### Key Collaboration Moments
 
-Throughout the development process, there were several instances where the human-AI collaboration led to significant improvements:
+During development, several instances of human-AI collaboration led to significant improvements:
 
 #### Manual Testing Revealed Issues
 
-1. **Type Filter Delay**: Manual testing revealed that the type filters were "one click behind" - selecting a filter wouldn't apply until a second filter was clicked. This led to a complete refactoring of the filter implementation to make it more responsive.
+1. **Type Filter Delay**: Manual testing revealed type filters were "one click behind" - selecting a filter wouldn't apply until a second filter was clicked. This led to refactoring of the filter implementation.
 
-2. **UI Flickering During Filter Changes**: Testing showed flickering when switching between filters. This was addressed by implementing a more sophisticated state management approach that maintained UI stability during transitions.
+2. **UI Flickering During Filter Changes**: Testing showed flickering when switching between filters. A more sophisticated state management that maintained UI stability during transitions was implemented.
 
-3. **Movie Title Display Issues**: Testing identified that movie titles were being truncated too aggressively, making it difficult to read them. This led to UI improvements that prioritized title readability.
+3. **Movie Title Display Issues**: Testing showed movie titles were truncated too aggressively, making them difficult to read. This led to UI improvements.
 
-4. **Build Process Errors**: During deployment preparation, manual testing uncovered several TypeScript errors that weren't apparent during development. These were systematically addressed to ensure a successful production build.
+4. **Build Process Errors**: During deployment preparation, manual testing uncovered several TypeScript errors that weren't apparent during development.
 
 #### Questioning AI-Generated Code
 
@@ -129,28 +131,6 @@ This project uses the OMDb API with the following endpoints:
 - Search: `https://www.omdbapi.com/?s=SEARCH_TERM&apikey=API_KEY`
 - Movie details: `https://www.omdbapi.com/?i=MOVIE_ID&apikey=API_KEY`
 
-## License
-
-```
-This project is licensed under the MIT License - see below for details:
-MIT License
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
 ## Future Improvements
 
 While Getflix already provides a solid movie search experience, there are several potential enhancements that could be implemented in future iterations:
@@ -218,3 +198,25 @@ While Getflix already provides a solid movie search experience, there are severa
     - Implement region-specific content filtering
 
 These improvements would enhance the user experience and add valuable functionality to the application while maintaining its core simplicity and focus on movie discovery.
+
+## License
+
+```
+This project is licensed under the MIT License - see below for details:
+MIT License
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
