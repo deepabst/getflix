@@ -29,8 +29,11 @@ export const useMovieSearch = (): UseMovieSearchResult => {
   // The search function now accepts an optional type parameter
   const search = useCallback(
     async (term: string, page = 1, newType?: MediaType) => {
-      // If search term is empty, reset everything
-      if (!term.trim()) {
+      // Trim the search term
+      const trimmedTerm = term.trim();
+
+      // Don't search if the trimmed term is empty
+      if (!trimmedTerm) {
         setMovies([]);
         setTotalResults(0);
         setError(null);
@@ -54,7 +57,7 @@ export const useMovieSearch = (): UseMovieSearchResult => {
 
       try {
         // Call the API service with optional type filter
-        const response = await searchMovies(term, page, typeToUse ? typeToUse : undefined);
+        const response = await searchMovies(trimmedTerm, page, typeToUse ? typeToUse : undefined);
 
         // Handle successful response
         if (response.Response === 'True') {
@@ -78,7 +81,7 @@ export const useMovieSearch = (): UseMovieSearchResult => {
           setHasMore(page * 10 < total);
 
           // Update current search term and page
-          setCurrentSearchTerm(term);
+          setCurrentSearchTerm(trimmedTerm);
           setCurrentPage(page);
 
           // Clear any previous errors
@@ -93,7 +96,7 @@ export const useMovieSearch = (): UseMovieSearchResult => {
           // Customize error message for "Movie not found" when filtering
           if (response.Error === 'Movie not found!' && typeToUse) {
             setError(
-              `No ${typeToUse}s found for "${term}". Try a different search term or filter.`
+              `No ${typeToUse}s found for "${trimmedTerm}". Try a different search term or filter.`
             );
           } else {
             setError(response.Error || 'No results found');

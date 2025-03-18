@@ -20,13 +20,14 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSubmit, loading }: SearchBarPr
   // It waits 500ms after the user stops typing before triggering a search
   useEffect(() => {
     // Skip if input is empty or matches current search term
-    if (!inputValue.trim() || inputValue === searchTerm) return;
+    const trimmedInput = inputValue.trim();
+    if (!trimmedInput || trimmedInput === searchTerm.trim()) return;
 
     // Create a timer that will execute after 500ms
     const debounceTimer = setTimeout(() => {
-      // Only trigger search if input value is different from current search term
-      if (inputValue !== searchTerm) {
-        onSubmit(inputValue);
+      // Only trigger search if trimmed input value is different from current search term
+      if (trimmedInput !== searchTerm.trim()) {
+        onSubmit(trimmedInput);
       }
     }, 500); // 500ms debounce delay
 
@@ -46,7 +47,11 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSubmit, loading }: SearchBarPr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Immediate search on form submission (bypasses debounce)
-    onSubmit(inputValue);
+    // Trim the input value before submitting
+    const trimmedInput = inputValue.trim();
+    if (trimmedInput && trimmedInput !== searchTerm.trim()) {
+      onSubmit(trimmedInput);
+    }
   };
 
   return (
