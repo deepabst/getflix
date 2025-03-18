@@ -2,7 +2,7 @@
 
 A React application for searching movies using the OMDb API.
 
-Live demo: https://getflix-o9uxx82le-deepabsts-projects.vercel.app
+[Live demo](https://getflix-deepabst.vercel.app/)
 
 ## Features
 
