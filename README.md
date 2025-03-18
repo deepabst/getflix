@@ -5,6 +5,9 @@ A React application for searching movies using the OMDb API.
 ## Features
 
 - Search for movies, series, episodes, and games
+- Debounced search for improved performance and user experience
+  - Prevents excessive API calls by waiting until the user stops typing
+  - Reduces server load and improves application responsiveness
 - View detailed information about each title
 - Filter results by type (movie, series, episode, game)
 - Responsive design for all screen sizes
@@ -147,3 +150,71 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Future Improvements
+
+While Getflix already provides a solid movie search experience, there are several potential enhancements that could be implemented in future iterations:
+
+### Stretch Goals
+
+1. **Watchlist Feature**:
+
+   - Implement a watchlist where users can save movies they want to watch later
+   - Use local storage for persistence across sessions
+   - Add the ability to remove items from the watchlist
+
+2. **Enhanced UI/UX**:
+
+   - Add animations and transitions between pages and states
+   - Implement skeleton loading states for a more polished loading experience
+   - Add hover effects for movie cards to display additional information
+
+3. **Theme Switching**:
+
+   - Implement light and dark mode themes
+   - Allow users to toggle between themes
+   - Save theme preference in local storage
+
+4. **Advanced Filtering**:
+
+   - Add year range filters
+   - Implement genre filtering (would require additional API calls)
+   - Add sorting options (by year, title, rating)
+
+5. **Performance Optimizations**:
+
+   - Implement caching for search results to reduce API calls
+   - Optimize image loading with lazy loading and proper sizing
+   - Further refine the existing debounced search implementation
+
+6. **Accessibility Improvements**:
+
+   - Ensure full keyboard navigation
+   - Implement proper ARIA attributes throughout the application
+   - Add screen reader support for all interactive elements
+   - Improve color contrast for better readability
+
+7. **Testing**:
+
+   - Add unit tests for components and hooks
+   - Implement integration tests for key user flows
+   - Add end-to-end testing with Cypress or Playwright
+
+8. **Additional Features**:
+
+   - Implement user ratings and reviews (would require backend)
+   - Add similar movie recommendations
+   - Integrate with additional APIs for more comprehensive movie data
+   - Add trailer viewing capability
+
+9. **Mobile Enhancements**:
+
+   - Implement a mobile-first redesign for certain views
+   - Add touch gestures for navigation
+   - Optimize performance specifically for mobile devices
+
+10. **Internationalization**:
+    - Add support for multiple languages
+    - Implement region-specific content filtering
+
+These improvements would enhance the user experience and add valuable functionality to the application while maintaining its core simplicity and focus on movie discovery.

@@ -16,31 +16,38 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSubmit, loading }: SearchBarPr
     setInputValue(searchTerm);
   }, [searchTerm]);
 
+  // This useEffect implements debounced search
+  // It waits 500ms after the user stops typing before triggering a search
+  useEffect(() => {
+    // Skip if input is empty or matches current search term
+    if (!inputValue.trim() || inputValue === searchTerm) return;
+
+    // Create a timer that will execute after 500ms
+    const debounceTimer = setTimeout(() => {
+      // Only trigger search if input value is different from current search term
+      if (inputValue !== searchTerm) {
+        onSubmit(inputValue);
+      }
+    }, 500); // 500ms debounce delay
+
+    // Cleanup function that clears the timer if component re-renders before timer completes
+    // This effectively cancels the search if user types again within 500ms
+    return () => clearTimeout(debounceTimer);
+  }, [inputValue, searchTerm, onSubmit]);
+
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // Update local state immediately for responsive UI
     setInputValue(e.target.value);
+    // The actual search will be triggered by the useEffect after the debounce delay
   };
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Immediate search on form submission (bypasses debounce)
     onSubmit(inputValue);
   };
-
-  // Debounce search
-  useEffect(() => {
-    if (inputValue !== searchTerm) {
-      const timer = setTimeout(() => {
-        if (inputValue.trim()) {
-          setSearchTerm(inputValue);
-          onSubmit(inputValue);
-        }
-      }, 500);
-
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputValue]);
 
   return (
     <form onSubmit={handleSubmit} className="search-bar">
